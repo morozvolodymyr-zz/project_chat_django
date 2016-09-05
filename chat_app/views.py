@@ -1,7 +1,10 @@
 from django.shortcuts import render
+from django.views import View
 
 from chat_app.registration import req_handler
 
 
-def registration_handler(request):
-    return req_handler(request)
+class RegistrationView(View):
+
+    def post(self, request, *args, **kwargs):
+        return req_handler(request)

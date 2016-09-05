@@ -5,6 +5,7 @@
     <title>Registration</title>
 </head>
 <body>
+    {{ error }}
     <form action="registration_handler" method="post">
         {% csrf_token %}
         name:<input type="text" name="name" value=""/><br>
