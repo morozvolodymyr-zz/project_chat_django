@@ -1,28 +1,33 @@
 from django.shortcuts import render
 from django.views import View
 from django.views.generic import FormView
-from chat_app.forms import LoginForm
+from chat_app.forms import LoginForm, RegistrationForm
 from chat_app.models import Credential
 
 
-class RegistrationView(View):
-    def post(self, request, *args, **kwargs):
-        user_name = request.POST['name']
-        user_surname = request.POST['surname']
-        user_login = request.POST['login']
-        user_password = request.POST['password']
-        try:
-            if user_name is not None and len(user_name) <= 30:
-                if user_surname is not None and len(user_surname) <= 30:
-                    if user_login is not None and len(user_login) <= 20:
-                        if user_password is not None and len(user_password) <= 20:
-                            credential = Credential(name=user_name, surname=user_surname, login=user_login, password=user_password, is_admin=False)
-                            credential.save()
-                            return render(request, 'index.html', {})
-        except Exception:
-            pass
+class RegistrationView(FormView):
+    template_name = 'registration.html'
+    form_class = RegistrationForm
 
-        return render(request, 'registration.html', {'error':'error in registration'})
+    def post(self, request, *args, **kwargs):
+        registration_form = RegistrationForm(request.POST)
+        if registration_form.is_valid():
+            user_name = registration_form.cleaned_data['name']
+            user_surname = registration_form.cleaned_data['surname']
+            user_login = registration_form.cleaned_data['login']
+            user_password = registration_form.cleaned_data['password']
+            try:
+                if user_name is not None and len(user_name) <= Credential.max_len_users:
+                    if user_surname is not None and len(user_surname) <= Credential.max_len_users:
+                        if user_login is not None and len(user_login) <= Credential.max_len_cred:
+                            if user_password is not None and len(user_password) <= Credential.max_len_cred:
+                                credential = Credential(name=user_name, surname=user_surname, login=user_login, password=user_password, is_admin=False)
+                                credential.save()
+                                return render(request, 'index.html', {})
+            except Exception:
+                pass
+
+            return render(request, 'registration.html', {'error': 'error in registration', 'form': RegistrationForm})
 
 
 class LoginView(FormView):
