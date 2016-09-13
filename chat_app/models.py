@@ -2,9 +2,8 @@ from django.db import models
 
 
 class Users(models.Model):
-    max_len_users = 30
-    name = models.CharField(max_length=max_len_users)
-    surname = models.CharField(max_length=max_len_users)
+    name = models.CharField(max_length=30)
+    surname = models.CharField(max_length=30)
 
 
 # class Credential(models.Model):
@@ -17,9 +16,9 @@ class Users(models.Model):
 
 class Credential(Users):
     max_len_cred = 20
-    login = models.CharField(max_length=max_len_cred, unique=True)
-    password = models.CharField(max_length=max_len_cred)
-    is_admin = models.BooleanField()
+    login = models.CharField(max_length=20, unique=True)
+    password = models.CharField(max_length=20)
+    is_admin = models.BooleanField(default=False)
 
 
 class Messages(models.Model):
