@@ -57,7 +57,10 @@ class LoginView(django.views.generic.FormView):
                 if c.is_admin:
                     request.session['is_admin'] = True
                     return render(request, 'admin.html', {'user': user_login})
-                else:
+                ban = BlackList.objects.filter(id_user__login=user_login).first()
+                if ban is None:
                     return render(request, 'chat.html', {'user': user_login})
+                else:
+                    return render(request, 'ban.html', {'user': user_login})
             else:
                 return render(request, 'login.html', {'error': 'login incorrect', 'form': LoginForm})
