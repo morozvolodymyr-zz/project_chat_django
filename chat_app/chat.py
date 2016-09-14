@@ -42,6 +42,7 @@ class SocketHandler(SockJSConnection):
             self.send(output)
         elif message_array[0] == 'broadcast':
             SocketHandler.data_base.lpush('broadcast', message_array[1])
+            SocketHandler.data_base.expire('broadcast', 1000)
             output_message = message_array[0] + ':' + message_array[1]
             for client in SocketHandler.client_sock.values():
                 client.send(output_message)
